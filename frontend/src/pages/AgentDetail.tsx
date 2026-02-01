@@ -4,11 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowLeft, Play, Settings, Activity, FileCode, Clock } from 'lucide-react';
+import { ArrowLeft, Play, Settings, Clock } from 'lucide-react';
 import SkillsEditor from '@/components/agents/SkillsEditor';
-import {
-    Table, TableBody, TableCell, TableHead, TableHeader, TableRow
-} from "@/components/ui/table";
+
 
 const AgentDetail = () => {
     const { id } = useParams();

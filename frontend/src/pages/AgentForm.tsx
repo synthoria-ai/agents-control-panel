@@ -21,11 +21,9 @@ import {
     CardContent,
     CardDescription,
     CardHeader,
-    CardTitle,
-    CardFooter
+    CardTitle
 } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { api } from '@/lib/api';
 
 // Schema
 const agentSchema = z.object({
@@ -36,7 +34,7 @@ const agentSchema = z.object({
     schedule: z.string().optional(),
     model: z.string(),
     temperature: z.number().min(0).max(1),
-    enabled: z.boolean().default(true),
+    enabled: z.boolean(),
     useTemplate: z.boolean().optional(),
     templateId: z.string().optional(),
 });
@@ -68,14 +66,14 @@ const AgentForm = () => {
     const type = watch('type');
     const useTemplate = watch('useTemplate');
 
-    const onSubmit = async (data: AgentFormValues) => {
+    const onSubmit = async (_formData: AgentFormValues) => {
         try {
             // Mock API call
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             // In a real app:
-            // if (isEditMode) await api.put(`/agents/${id}`, data);
-            // else await api.post('/agents', data);
+            // if (isEditMode) await api.put(`/agents/${id}`, formData);
+            // else await api.post('/agents', formData);
 
             toast.success(isEditMode ? "Agent updated successfully" : "Agent created successfully");
             navigate('/agents/content-research'); // Go to detail page (mock)

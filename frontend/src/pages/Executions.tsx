@@ -18,8 +18,8 @@ const Executions = () => {
         queryFn: () => api.get('/executions?limit=50'),
     });
 
-    // @ts-ignore
-    const executions = data?.data || [];
+    // API returns array directly after mapping
+    const executions = data || [];
 
     return (
         <div className="space-y-6">
@@ -58,7 +58,7 @@ const Executions = () => {
                                 </TableCell>
                                 <TableCell>{exec.duration}s</TableCell>
                                 <TableCell className="max-w-[200px] truncate text-muted-foreground">
-                                    {exec.result.summary}
+                                    {typeof exec.result === 'string' ? exec.result : exec.result?.summary || 'N/A'}
                                 </TableCell>
                                 <TableCell className="text-right">
                                     <Button variant="ghost" size="sm">View Logs</Button>

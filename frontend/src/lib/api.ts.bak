@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://agents.nnr.buzz';
 const API_KEY = import.meta.env.VITE_WEBHOOK_API_KEY || '';
 
 // Type definitions for API responses
@@ -121,12 +121,6 @@ function mapExecutionData(backendExecution: any): Execution {
     'running': 'pending',
   };
 
-  // Convert duration from ms to seconds
-  const durationSeconds = backendExecution.duration_ms ? parseFloat((backendExecution.duration_ms / 1000).toFixed(2)) : 0;
-  
-  // Extract result content
-  const resultContent = backendExecution.result?.content || backendExecution.result || 'N/A';
-
   return {
     id: backendExecution.id,
     agent_name: backendExecution.agent_name,
@@ -137,9 +131,9 @@ function mapExecutionData(backendExecution: any): Execution {
     startTime: backendExecution.start_time,
     end_time: backendExecution.end_time,
     endTime: backendExecution.end_time,
-    duration: durationSeconds,
-    result: resultContent,
-    output: resultContent,
+    duration: backendExecution.duration,
+    result: backendExecution.result,
+    output: backendExecution.result,
     error: backendExecution.error,
     logs: backendExecution.logs,
     tokens_used: backendExecution.tokens_used,
@@ -154,19 +148,12 @@ export const api = {
   get: async (endpoint: string) => {
     if (endpoint === '/agents') {
       const response = await authenticatedFetch(`${API_BASE}/api/agents`);
-      console.log('[API] Raw response:', response);
-      console.log('[API] Has data property:', 'data' in response);
-      console.log('[API] Is array:', Array.isArray(response));
       // Backend returns { success: true, data: [...], count: N }
       if (response.data && Array.isArray(response.data)) {
-        const mapped = response.data.map(mapAgentData);
-        console.log('[API] Mapped agents:', mapped);
-        return mapped;
+        return response.data.map(mapAgentData);
       }
       // Fallback for direct array response
-      const fallback = Array.isArray(response) ? response.map(mapAgentData) : [];
-      console.log('[API] Fallback agents:', fallback);
-      return fallback;
+      return Array.isArray(response) ? response.map(mapAgentData) : [];
     }
 
     // Get single agent
@@ -179,17 +166,12 @@ export const api = {
     }
 
     // Get all executions
-    if (endpoint.startsWith('/executions')) {
+    if (endpoint === '/executions') {
       const response = await authenticatedFetch(`${API_BASE}/api/executions`);
-      console.log('[API] Executions raw response:', response);
       if (response.data && Array.isArray(response.data)) {
-        const mapped = response.data.map(mapExecutionData);
-        console.log('[API] Mapped executions:', mapped.length, 'items');
-        return mapped;
+        return response.data.map(mapExecutionData);
       }
-      const fallback = Array.isArray(response) ? response.map(mapExecutionData) : [];
-      console.log('[API] Fallback executions:', fallback);
-      return fallback;
+      return Array.isArray(response) ? response.map(mapExecutionData) : [];
     }
 
     // Get single execution

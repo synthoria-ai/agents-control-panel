@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Editor, { OnMount } from '@monaco-editor/react';
+import Editor, { type OnMount } from '@monaco-editor/react';
 import { Button } from '@/components/ui/button';
 import { Save, RotateCcw, Check, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -16,7 +16,7 @@ const SkillsEditor = ({
     const [value, setValue] = useState(initialValue);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'unsaved'>('idle');
     const editorRef = useRef<any>(null);
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Auto-save logic
     useEffect(() => {
